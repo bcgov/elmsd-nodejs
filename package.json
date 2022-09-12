@@ -1,0 +1,19 @@
+{
+    "name": "elmsd-nodejs",
+    "private": true,
+    "description": "ELMSD NodeJS Monorepo",
+    "license": "Apache-2.0",
+    "author": "Sid McLaughlin <sid.mclaughlin@gov.bc.ca>",
+    "workspaces": [
+        "packages/*"
+    ],
+    "devDependencies": {
+        "@changesets/cli": "^2.24.4",
+        "husky": "^8.0.1",
+        "lint-staged": "^13.0.3",
+        "typescript": "^4.8.3"
+    },
+    "scripts:": {
+        "prepare": "husky install"
+    }
+}

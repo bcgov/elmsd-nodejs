@@ -1,0 +1,62 @@
+{
+    "name": "@bcgov/eslint-config-elmsd",
+    "version": "0.0.0",
+    "description": "A modern ESLint configuration for JavaScript, TypeScript and React which includes the Airbnb style guide, jsx-a11y and Prettier.",
+    "keywords": [
+        "eslint",
+        "javascript",
+        "jsx-a11y",
+        "prettier",
+        "react",
+        "typescript"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/bcgov/elmsd-nodejs",
+        "directory": "packages/eslint-config-elmsd"
+    },
+    "license": "Apache-2.0",
+    "author": "Sid McLaughlin <sid.mclaughlin@gov.bc.ca>",
+    "main": "lib/index.js",
+    "files": [
+        "lib",
+        "LICENSE",
+        "README.md"
+    ],
+    "devDependencies": {
+        "@types/node": "^18.7.16",
+        "@types/react": "^18.0.18",
+        "@typescript-eslint/eslint-plugin": "^5.36.2",
+        "@typescript-eslint/parser": "^5.36.2",
+        "eslint": "^8.23.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-import-resolver-typescript": "^3.5.1",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-jest": "^27.0.2",
+        "eslint-plugin-jsx-a11y": "^6.6.1",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-react": "^7.31.7",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "prettier": "^2.7.1",
+        "prettier-plugin-packagejson": "^2.2.18",
+        "prop-types": "^15.8.1",
+        "react": "^18.2.0",
+        "typescript": "^4.8.3"
+    },
+    "peerDependencies": {
+        "eslint": "^8.0.0",
+        "prettier": "^2.0.0",
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "typescript": "^4.8.3"
+    },
+    "peerDependenciesMeta": {
+        "react": {
+            "optional": true
+        },
+        "typescript": {
+            "optional": true
+        }
+    }
+}
