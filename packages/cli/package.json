@@ -13,6 +13,9 @@
     "bin": {
         "elmsd-cli": "./dist/main.js"
     },
+    "files": [
+        "/dist"
+    ],
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "nest build",
