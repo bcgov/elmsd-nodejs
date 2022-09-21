@@ -1,12 +1,12 @@
 {
-    "name": "@bcgov/elmsd-cli",
+    "name": "@bcgov-elmsd/cli",
     "version": "0.0.0",
     "private": true,
     "description": "ELMSD CLI Utility",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/bcgov/elmsd-nodejs",
-        "directory": "packages/elmsd-cli"
+        "directory": "packages/cli"
     },
     "license": "Apache-2.0",
     "author": "Sid McLaughlin <sid.mclaughlin@gov.bc.ca>",
