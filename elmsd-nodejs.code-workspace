@@ -35,6 +35,7 @@
         "javascript.format.semicolons": "remove",
         "javascript.preferences.quoteStyle": "double",
         "typescript.format.semicolons": "remove",
+        "typescript.preferences.importModuleSpecifier": "project-relative",
         "typescript.preferences.quoteStyle": "double",
         "typescript.tsdk": "node_modules/typescript/lib"
     }

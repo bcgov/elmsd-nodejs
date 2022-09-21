@@ -1,5 +1,13 @@
 # elmsd-cli
 
+## Usage
+
+Create a migration
+
+```
+npx elmsd-cli db migrate make -d src/_migrations -e ts initial_migration
+```
+
 ## License
 
 ```

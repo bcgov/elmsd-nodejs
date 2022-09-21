@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common"
 import { ConsoleModule } from "nestjs-console"
+import { DatabaseModule } from "./database/database.module"
 
 @Module({
-    imports: [ConsoleModule]
+    imports: [ConsoleModule, DatabaseModule]
 })
-export default class AppModule {}
+export class AppModule {}
