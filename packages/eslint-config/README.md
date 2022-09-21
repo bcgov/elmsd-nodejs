@@ -1,4 +1,4 @@
-# elmsd-eslint-config
+# @bcgov-elmsd/eslint-config
 
 A modern [ESLint](https://eslint.org) configuration for [JavaScript](https://ecma-international.org/publications-and-standards/standards/ecma-262), [TypeScript](https://www.typescriptlang.org) and [React](https://reactjs.org) which includes the [Airbnb style guide](https://github.com/airbnb/javascript), [jsx-a11y]() and [Prettier](https://www.npmjs.com/package/eslint-plugin-prettier).
 
@@ -21,21 +21,21 @@ npm install prettier@2 --save-dev --save-exact
 
 If you use [TypeScript](https://www.typescriptlang.org/) or [React](https://reactjs.org/) you'll also need to install them, but let's assume they're already installed. Have a look at the `peerDependencies` field in the package.json to know which one we support.
 
-### Install elmsd-eslint-config
+### Install @bcgov-elmsd/eslint-config
 
 ```sh
-npm install elmsd-eslint-config --save-dev
+npm install @bcgov-elmsd/eslint-config --save-dev
 ```
 
 ### Setup the configuration file
 
-Using the [JavaScript file format](https://eslint.org/docs/user-guide/configuring/ßconfiguration-files#configuration-file-formats) supported by [ESlint](https://eslint.org/), you'll need to add `"elmsd"` in the `"extends"` value of the configuration. Here's an example using a `.eslintrc.js` file.
+Using the [JavaScript file format](https://eslint.org/docs/user-guide/configuring/ßconfiguration-files#configuration-file-formats) supported by [ESlint](https://eslint.org/), you'll need to add `"@bcgov-elmsd/eslint-config"` in the `"extends"` value of the configuration. Here's an example using a `.eslintrc.js` file.
 
 #### Using the full configuration with JavaScript, TypeScript and React
 
 ```js
 module.exports = {
-    extends: ["elmsd"]
+    extends: ["@bcgov-elmsd/eslint-config"]
 }
 ```
 
@@ -43,7 +43,7 @@ module.exports = {
 
 ```js
 module.exports = {
-    extends: ["elmsd/js"]
+    extends: ["@bcgov-elmsd/eslint-config/js"]
 }
 ```
 
@@ -51,7 +51,7 @@ module.exports = {
 
 ```js
 module.exports = {
-    extends: ["elmsd/js", "elmsd/jsx"]
+    extends: ["@bcgov-elmsd/eslint-config/js", "@bcgov-elmsd/eslint-config/jsx"]
 }
 ```
 
@@ -59,7 +59,7 @@ module.exports = {
 
 ```js
 module.exports = {
-    extends: ["elmsd/ts"]
+    extends: ["@bcgov-elmsd/eslint-config/ts"]
 }
 ```
 
@@ -67,7 +67,7 @@ module.exports = {
 
 ```js
 module.exports = {
-    extends: ["elmsd/ts", "elmsd/tsx"]
+    extends: ["@bcgov-elmsd/eslint-config/ts", "@bcgov-elmsd/eslint-config/tsx"]
 }
 ```
 
