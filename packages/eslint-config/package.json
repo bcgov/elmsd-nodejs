@@ -1,6 +1,6 @@
 {
     "name": "@bcgov-elmsd/eslint-config",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "description": "A modern ESLint configuration for JavaScript, TypeScript and React which includes the Airbnb style guide, jsx-a11y and Prettier.",
     "keywords": [
         "eslint",
