@@ -1,5 +1,11 @@
 # @bcgov-elmsd/cli
 
+## 0.0.2
+
+### Patch Changes
+
+-   [#16](https://github.com/bcgov/elmsd-nodejs/pull/16) [`30a4e07`](https://github.com/bcgov/elmsd-nodejs/commit/30a4e077456a583147d6f37ced52f99badeafffe) Thanks [@sidmclaughlin](https://github.com/sidmclaughlin)! - Updated build pipeline to fix empty module.
+
 ## 0.0.1
 
 ### Patch Changes
