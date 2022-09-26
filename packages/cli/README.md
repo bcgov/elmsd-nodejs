@@ -15,7 +15,7 @@ Database migrations are run sequentially, and are tracked by the database in the
 
 The following migration commands are available.  To see more information about each command, run `npx @bcgov-elmsd/cli db migrate <command> --help`.
 
-![npx @bcgov-elmsd/cli db migrate --help](https://raw.githubusercontent.com/bcgov/elmsd-nodejs/main/packages/cli/public/static/db-seed-help.png)
+![npx @bcgov-elmsd/cli db migrate --help](https://raw.githubusercontent.com/bcgov/elmsd-nodejs/main/packages/cli/public/static/db-migrate-help.png)
 
 ### Commands
 ```sh
