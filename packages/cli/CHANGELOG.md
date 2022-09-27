@@ -1,5 +1,11 @@
 # @bcgov-elmsd/cli
 
+## 0.0.4
+
+### Patch Changes
+
+-   [#24](https://github.com/bcgov/elmsd-nodejs/pull/24) [`4e502d9`](https://github.com/bcgov/elmsd-nodejs/commit/4e502d91502633a87e784de681c45a5023d7fa42) Thanks [@sidmclaughlin](https://github.com/sidmclaughlin)! - Update README and migration, seed stubs.
+
 ## 0.0.3
 
 ### Patch Changes
