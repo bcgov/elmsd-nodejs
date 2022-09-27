@@ -1,6 +1,6 @@
 {
     "name": "@bcgov-elmsd/cli",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "ELMSD CLI Utility",
     "repository": {
         "type": "git",
