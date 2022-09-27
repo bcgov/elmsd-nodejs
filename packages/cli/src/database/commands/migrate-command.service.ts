@@ -74,7 +74,8 @@ export class MigrateCommandService {
             client: "pg",
             migrations: {
                 directory: path.resolve(dir),
-                extension: ext
+                extension: ext,
+                stub: path.resolve(__dirname, `../stubs/migrate/${ext}.stub`)
             }
         })
 

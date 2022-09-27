@@ -1,0 +1,9 @@
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> } 
+ */
+exports.seed = async function seed(knex) {
+    await knex.raw(`
+        // SQL to execute each time this seed is run
+    `);
+};

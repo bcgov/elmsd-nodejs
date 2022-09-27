@@ -69,7 +69,8 @@ export class SeedCommandService {
             seeds: {
                 directory: path.resolve(dir),
                 extension: ext,
-                timestampFilenamePrefix: true
+                timestampFilenamePrefix: true,
+                stub: path.resolve(__dirname, `../stubs/seed/${ext}.stub`)
             }
         })
 
