@@ -1,0 +1,32 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+    label: "${NAME}-config-template"
+    name: "${NAME}-config-template"
+objects:
+    - kind: ConfigMap
+      apiVersion: v1
+      metadata:
+          name: "${NAME}"
+          labels:
+              name: "${NAME}"
+              component: "database-backup"
+      data:
+          backup.conf: |-
+              # Add databases below, following the format:
+              #   <postgres|mongo>=<DATABASE_SERVICE_NAME>:<DATABASE_PORT>/<DATABASE_NAME>
+              #
+              # Add a new line for each database you want to back up
+
+
+              # The following cron schedules assume the server TZ is set to Pacific Time
+              # Run a backup at 1:00AM every day
+              0 1 * * * default ./backup.sh -s
+              # Verify the most recent backups for all databases at 4:00AM every day
+              0 4 * * * default ./backup.sh -s -v all
+parameters:
+    - name: NAME
+      displayName: Name
+      description: The name assigned to all of the resources.
+      required: true

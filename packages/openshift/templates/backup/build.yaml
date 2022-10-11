@@ -1,0 +1,77 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+    label: "${NAME}-build-template"
+    name: "${NAME}-build-template"
+    creationTimestamp:
+objects:
+    - kind: ImageStream
+      apiVersion: image.openshift.io/v1
+      metadata:
+          name: "${NAME}"
+          labels:
+              name: "${NAME}"
+              component: "database-backup"
+    - kind: BuildConfig
+      apiVersion: build.openshift.io/v1
+      metadata:
+          name: "${NAME}"
+          labels:
+              name: "${NAME}"
+              component: "database-backup"
+      spec:
+          triggers:
+              - type: ConfigChange
+              - type: ImageChange
+          runPolicy: Serial
+          source:
+              type: Git
+              git:
+                  uri: "${GIT_REPO_URL}"
+                  ref: "${GIT_REF}"
+              contextDir: "${SOURCE_CONTEXT_DIR}"
+          strategy:
+              type: Docker
+              dockerStrategy:
+                  dockerfilePath: "${DOCKER_FILE_PATH}"
+          output:
+              to:
+                  kind: ImageStreamTag
+                  name: "${NAME}:${OUTPUT_IMAGE_TAG}"
+parameters:
+    - name: NAME
+      displayName: Name
+      description: The name assigned to all of the resources.
+      required: true
+
+    - name: GIT_REPO_URL
+      displayName: Git Repo URL
+      description: The URL to the Git repo.
+      required: true
+      value: "https://github.com/BCDevOps/backup-container.git"
+
+    - name: GIT_REF
+      displayName: Git Reference
+      description: The git reference or branch.
+      required: true
+      value: "master"
+
+    - name: SOURCE_CONTEXT_DIR
+      displayName: Source Context Directory
+      description: The source context directory.
+      required: true
+      value: "/docker"
+
+    - name: DOCKER_FILE_PATH
+      displayName: Docker File
+      description: The path to the Dockerfile under the SOURCE_CONTEXT_DIR directory.  Choose
+          'Dockerfile' for Postgres or 'Dockerfile_Mongo' for MongoDB
+      required: true
+      value: "Dockerfile"
+
+    - name: OUTPUT_IMAGE_TAG
+      displayName: Output Image Tag
+      description: The tag given to the built image.
+      required: true
+      value: "latest"
