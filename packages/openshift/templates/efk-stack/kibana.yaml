@@ -1,0 +1,71 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+    name: efk-kibana-template
+objects:
+    - kind: Service
+      apiVersion: v1
+      metadata:
+          name: kibana
+          namespace: "${NAMESPACE}"
+          labels:
+              "app.kubernetes.io/part-of": efk-stack
+      spec:
+          selector:
+              app: kibana
+          ports:
+              - name: http
+                port: 5601
+
+    - kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+          name: kibana
+          namespace: "${NAMESPACE}"
+          labels:
+              "app.kubernetes.io/part-of": efk-stack
+      spec:
+          replicas: 1
+          selector:
+              matchLabels:
+                  app: kibana
+          template:
+              metadata:
+                  labels:
+                      app: kibana
+              spec:
+                  containers:
+                      - name: kibana
+                        image: docker.elastic.co/kibana/kibana:8.4.3
+                        resources:
+                            limits:
+                                cpu: "${KIBANA_CPU_LIMIT}"
+                            requests:
+                                cpu: "${KIBANA_CPU_REQUEST}"
+                        env:
+                            - name: ELASTICSEARCH_URL
+                              value: "${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"
+                        ports:
+                            - containerPort: 5601
+parameters:
+    - name: NAMESPACE
+      description: Namespace to install EFK stack
+      displayName: Namespace
+      required: true
+    - name: ELASTICSEARCH_HOST
+      description: Host from the ElasticSearch Service
+      displayName: ElasticSearch Host
+      required: true
+    - name: ELASTICSEARCH_PORT
+      description: Port form the ElasticSearch Service
+      displayName: ElasticSearch Port
+      value: "9200"
+    - name: KIBANA_CPU_LIMIT
+      description: Limit Peak CPU per pod (in millicores ex. 1000m)
+      displayName: CPU Limit
+      value: 100m
+    - name: KIBANA_CPU_REQUEST
+      description: Requested CPU per pod (in millicores ex. 500m)
+      displayName: CPU Request
+      value: 10m

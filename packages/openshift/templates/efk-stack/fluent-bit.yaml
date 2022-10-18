@@ -1,0 +1,108 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+    name: fluent-bit-dc
+objects:
+    - kind: Service
+      apiVersion: v1
+      metadata:
+          name: fluent-bit
+          namespace: "${NAMESPACE}"
+          labels:
+              app: fluent-bit
+      spec:
+          selector:
+              app: fluent-bit
+          clusterIP: None
+          ports:
+              - port: 8888
+                name: rest
+    - kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+          name: fluent-bit
+          namespace: "${NAMESPACE}"
+          labels:
+              "app.kubernetes.io/part-of": efk-stack
+      spec:
+          strategy:
+              type: Recreate
+          replicas: 2
+          selector:
+              matchLabels:
+                  app: fluent-bit
+          template:
+              metadata:
+                  name: fluent-bit
+                  labels:
+                      app: fluent-bit
+                      "app.kubernetes.io/part-of": efk-stack
+              spec:
+                  containers:
+                      - name: fluent-bit
+                        image: docker.io/fluent/fluent-bit:1.9.9
+                        imagePullPolicy: IfNotPresent
+                        livenessProbe:
+                            httpGet:
+                                path: /
+                                port: 2020
+                                scheme: HTTP
+                            initialDelaySeconds: 10
+                            timeoutSeconds: 1
+                            failureThreshold: 3
+                        ports:
+                            - name: metrics
+                              containerPort: 2020
+                              protocol: TCP
+                            - name: http-plugin
+                              containerPort: 80
+                              scheme: HTTP
+                              mountPath: /fluent-bit/etc
+                        readinessProbe:
+                            httpGet:
+                                path: /
+                                port: 2020
+                                scheme: HTTP
+                            initialDelaySeconds: 10
+                            timeoutSeeconds: 1
+                            failureThreshold: 3
+                        resources:
+                            requests:
+                                cpu: "${LOGGING_CPU_REQUEST}"
+                                memory: "${LOGGING_MEMORY_REQUEST}"
+                            limits:
+                                cpu: "${LOGGING_CPU_LIMIT}"
+                                memory: "${LOGGING_MEMORY_LIMIT}"
+                        volumeMounts:
+                            - name: fluent-bit-config
+                              mountPath: /fluent-bit/etc
+                  volumes:
+                      - name: fluent-bit-config
+                        configMap:
+                            name: fluent-bit-config
+                  restartPolicy: Always
+                  terminationGracePeriodSeconds: 30
+          triggers:
+              - type: ConfigChange
+parameters:
+    - name: NAMESPACE
+      description: Namespace to install EFK stack
+      displayName: Namespace
+      required: true
+    - name: LOGGING_CPU_LIMIT
+      description: Limit Peak CPU per pod (in millicores ex. 1000m)
+      displayName: CPU Limit
+      value: 50m
+    - name: LOGGING_CPU_REQUEST
+      description: Requested CPU per pod (in millicores ex. 500m)
+      displayName: CPU Request
+      value: 10m
+    - name: LOGGING_MEMORY_LIMIT
+      description: Limit Peak Memory per pod (in gigabytes Gi or megabytes Mi ex. 2Gi)
+      displayName: Memory Limit
+      value: 64Mi
+    - name: LOGGING_MEMORY_REQUEST
+      description: Requested Memory per pod (in gigabytes Gi or megabytes Mi ex. 500Mi)
+      displayName: Memory Request
+      value: 16Mi

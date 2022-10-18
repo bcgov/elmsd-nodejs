@@ -1,0 +1,58 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+    name: fluent-bit-config-template
+objects:
+    - kind: ConfigMap
+      apiVersion: v1
+      metadata:
+          name: fluent-bit-config
+          namespace: "${NAMESPACE}"
+          labels:
+              "app.kubernetes.io/part-of": efk-stack
+      data:
+          fluent-bit.conf: |-
+              [SERVICE]
+                Flush         5
+                Daemon        Off
+                Parsers_File  parsers.conf
+                Log_Level     debug
+                HTTP_Server   On
+                HTTP_Listen   0.0.0.0
+                HTTP_PORT     2020
+
+              [INPUT]
+                Name  http
+                Host  0.0.0.0
+                Port  8888
+
+              # [OUTPUT]
+              #   Name                es
+              #   Match               <camel-case-tag>
+              #   Host                "${ELASTICSEARCH_HOST}"
+              #   Port                "${ELASTICSEARCH_PORT}"
+              #   Index               <tag-name>
+              #   Type                _doc
+              #   Suppress_Type_Name  On
+
+          parsers.conf: |-
+              [PARSER]
+                Name            json
+                Format          json
+                Time_Key        timestamp
+                Decode_Field_as escaped_utf8 log do_next
+                Decode_field_as json log
+parameters:
+    - name: NAMESPACE
+      description: Namespace to install EFK stack
+      displayName: Namespace
+      required: true
+    - name: ELASTICSEARCH_HOST
+      description: Host from the ElasticSearch Service
+      displayName: ElasticSearch Host
+      required: true
+    - name: ELASTICSEARCH_PORT
+      description: Port form the ElasticSearch Service
+      displayName: ElasticSearch Port
+      value: "9200"
