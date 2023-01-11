@@ -11,8 +11,8 @@ These manifests deploy MinIO to OpenShift.  Choose one of the commands below bas
 ```sh
 oc process -f ./minio.yaml \
     -p NAMESPACE=<namespace> \
-	-p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \
-	-p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \
+    -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \
+    -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \
     -p MINIO_ROOT_USER=<username> \
     -p MINIO_ROOT_PASSWORD=<password> \
     -p PVC_STORAGE_SIZE=1Gi \
@@ -23,8 +23,8 @@ oc process -f ./minio.yaml \
 ```sh
 oc process -f ./minio-cluster.yaml \
     -p NAMESPACE=<namespace> \
-	-p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \
-	-p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \
+    -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \
+    -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \
     -p MINIO_ROOT_USER=<username> \
     -p MINIO_ROOT_PASSWORD=<password> \
     -p PVC_STORAGE_SIZE=1Gi \
@@ -45,18 +45,18 @@ mc alias set <alias> <server-url> <username> <password>
 **~/.mc/config.json**
 ```json
 {
-	"version": "10",
-	"aliases": {
+    "version": "10",
+    "aliases": {
         ...
-		"<alias>": {
-			"url": "<server-url>",
-			"accessKey": "<username>",
-			"secretKey": "<password>",
-			"api": "S3v4",
-			"path": "auto"
-		},
+        "<alias>": {
+            "url": "<server-url>",
+            "accessKey": "<username>",
+            "secretKey": "<password>",
+            "api": "S3v4",
+            "path": "auto"
+        },
         ...
-	}
+    }
 }
 ```
     
