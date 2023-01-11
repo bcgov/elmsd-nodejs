@@ -18,7 +18,7 @@ oc process -f ./minio.yaml \
     -p PVC_STORAGE_SIZE=1Gi \
     | oc apply -f -
 ```
-### 4 Node Cluster (Persistent)**
+### 4 Node Cluster (Persistent)
 
 ```sh
 oc process -f ./minio-cluster.yaml \
