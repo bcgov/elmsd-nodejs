@@ -19,25 +19,12 @@ oc process -f ./minio.yaml \
 ```
 ### Multi Node Cluster (Persistent)
 
-By default, the cluster is configured to create 4 Nodes.  To create a cluster with a different number of nodes, change the following lines in minio-cluster.yaml.
+By default, the cluster is configured to create 4 Nodes.  To create a cluster with a different number of nodes, supply the following parameters to the `oc process` command below.
 
-```yaml
-...
-spec:
-  serviceName: minio-svc
-  replicas: 4                       # Change this to the number of replicas (n)
-...
-args:
-  - server
-  - http://minio-{0...3}.minio-svc.${NAMESPACE}.svc.cluster.local/data    # Change `3` to n-1
-  - --console-address
-  - :9001
-...
-livenessProbe:
-    failureThreshold: 3 # Change to n-1
-...
+```sh
+    -p REPLICA_COUNT=<replica-count> \ # Must be 2 or greater
+    -p MINIO_REPLICA=<minio-replica> \ # Must always be (REPLICA_COUNT - 1)
 ```
-
 
 Run the following command to deploy the cluster.
 

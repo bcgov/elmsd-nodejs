@@ -38,6 +38,16 @@ parameters:
     displayName: MinIO OpenID Client Secret
   - name: MINIO_IDENTITY_OPENID_SCOPES
     displayName: MinIO OpenID Scopes
+  - name: REPLICA_COUNT
+    displayName: Replica Count
+    description: Number of replicas for your MinIO Cluster.  Must always be > 1
+    value: "4"
+    required: true
+  - name: MINIO_REPLICA
+    displayName: Minio Replica Max ID
+    description: Max ID for MinIO Replicas.  Must always equal REPLICA_COUNT - 1
+    value: "3"
+    required: true
   - name: PVC_STORAGE_SIZE
     displayName: PVC Storage Size
     description: Size of PVC Storage
@@ -144,7 +154,7 @@ objects:
         app.kubernetes.io/part-of: minio
     spec:
       serviceName: minio-svc
-      replicas: 4
+      replicas: ${{REPLICA_COUNT}}
       podManagementPolicy: Parallel
       selector:
         matchLabels:
@@ -160,7 +170,7 @@ objects:
               image: minio/minio
               args:
                 - server
-                - http://minio-{0...3}.minio-svc.${NAMESPACE}.svc.cluster.local/data
+                - http://minio-{0...${MINIO_REPLICA}}.minio-svc.${NAMESPACE}.svc.cluster.local/data
                 - --console-address
                 - :9001
               env:
@@ -198,11 +208,18 @@ objects:
                     secretKeyRef:
                       name: minio-secrets
                       key: MINIO_IDENTITY_OPENID_SCOPES
+              resources:
+                requests:
+                  cpu: 5m
+                  memory: 150Mi
+                limits:
+                  cpu: 10m
+                  memory: 500Mi
               volumeMounts:
                 - name: minio-data
                   mountPath: /data
               livenessProbe:
-                failureThreshold: 3
+                failureThreshold: ${{MINIO_REPLICA}}
                 httpGet:
                   path: /minio/health/live
                   port: http

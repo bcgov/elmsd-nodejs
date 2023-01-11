@@ -229,6 +229,13 @@ objects:
                 - name: console
                   containerPort: 9001
                   protocol: TCP
+              resources:
+                requests:
+                  cpu: 5m
+                  memory: 150Mi
+                limits:
+                  cpu: 10m
+                  memory: 500Mi
               volumeMounts:
                 - name: minio-data
                   mountPath: /data
