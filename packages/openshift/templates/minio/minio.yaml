@@ -21,10 +21,14 @@ parameters:
   - name: MINIO_ROOT_USER
     displayName: MinIO Root User
     description: Username to administer the MinIO installation
+    generate: expression
+    from: '[a-z0-9]{32}'
     required: true
   - name: MINIO_ROOT_PASSWORD
     displayName: MinIO Root Password
     description: Password to administer the MinIO installation
+    generate: expression
+    from: '[a-z0-9]{32}'
     required: true
   - name: MINIO_IDENTITY_OPENID_CONFIG_URL
     displayName: MinIO OpenID Config URL
