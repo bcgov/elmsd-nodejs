@@ -164,3 +164,5 @@ There are a few caveats to this solution:
 2. PVC Scaling
 
     Initial tests indiciate we can scale PVCs and have their storage reflected inside MinIO.  All PVCs must be updated at the same time to the same value.
+
+    According to https://min.io/docs/minio/linux/operations/install-deploy-manage/expand-minio-deployment.html, the correct approach is to create a new instance, and link it with the original instance.
