@@ -2,10 +2,9 @@
 
 ## <a name="installation"></a>Installation
 
-These manifests deploy MinIO to OpenShift.  Choose one of the commands below based on your needs.
-
 **Note:** If you want to use Single Sign On (SSO) to administer the MinIO Installation, see the [Single Sign On (SSO)](#sso) section for additional configuration parameters *before* deploying your selected manifest.  If you want to add SSO later, use the MinIO GUI.
 
+These manifests deploy MinIO to OpenShift.  Choose one of the commands below based on your needs.
 ### Single Node Instance (Ephemeral)
 
 ```sh
@@ -18,7 +17,29 @@ oc process -f ./minio.yaml \
     -p PVC_STORAGE_SIZE=1Gi \
     | oc apply -f -
 ```
-### 4 Node Cluster (Persistent)
+### Multi Node Cluster (Persistent)
+
+By default, the cluster is configured to create 4 Nodes.  To create a cluster with a different number of nodes, change the following lines in minio-cluster.yaml.
+
+```yaml
+...
+spec:
+  serviceName: minio-svc
+  replicas: 4                       # Change this to the number of replicas (n)
+...
+args:
+  - server
+  - http://minio-{0...3}.minio-svc.${NAMESPACE}.svc.cluster.local/data    # Change `3` to n-1
+  - --console-address
+  - :9001
+...
+livenessProbe:
+    failureThreshold: 3 # Change to n-1
+...
+```
+
+
+Run the following command to deploy the cluster.
 
 ```sh
 oc process -f ./minio-cluster.yaml \
@@ -131,3 +152,15 @@ To configure the deployment, fill out the following parameters and use them when
     -p MINIO_IDENTITY_OPENID_CLIENT_SECRET=<sso-client-secret> \
     -p MINIO_IDENTITY_OPENID_SCOPES=openid,idir,profile \
 ```
+
+# Considerations
+
+There are a few caveats to this solution:
+
+1. Pods cannot be scaled in OpenShift.
+
+    Replicas are managed inside MinIO, and not at the OpenShift level.  Scaling the deployment will put MinIO into an inoperable state.  Resetting the number of replicas to the originally deployed value will put MinIO into an operable state.
+
+2. PVC Scaling
+
+    Initial tests indiciate we can scale PVCs and have their storage reflected inside MinIO.  All PVCs must be updated at the same time to the same value.
