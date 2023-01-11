@@ -1,0 +1,234 @@
+---
+kind: Template
+apiVersion: template.openshift.io/v1
+parameters:
+  - name: NAMESPACE
+    displayName: Namespace
+    description: Namespace to apply the template
+    required: true
+  - name: BASE_URL
+    displayName: BC Gov OpenShift Base URL
+    required: true
+    value: apps.silver.devops.gov.bc.ca
+  - name: MINIO_CONSOLE_SUBDOMAIN
+    displayName: MinIO Console Subdomain
+    description: "ex: <subdomain>.${BASE_URL}"
+    required: true
+  - name: MINIO_SERVER_SUBDOMAIN
+    displayName: MinIO Server Subdomain
+    description: "ex: <subdomain>.${BASE_URL}"
+    required: true
+  - name: MINIO_ROOT_USER
+    displayName: MinIO Root User
+    description: Username to administer the MinIO installation
+    required: true
+  - name: MINIO_ROOT_PASSWORD
+    displayName: MinIO Root Password
+    description: Password to administer the MinIO installation
+    required: true
+  - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+    displayName: MinIO OpenID Config URL
+  - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+    displayName: MinIO OpenID Client ID
+  - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+    displayName: MinIO OpenID Client Secret
+  - name: MINIO_IDENTITY_OPENID_SCOPES
+    displayName: MinIO OpenID Scopes
+  - name: PVC_STORAGE_SIZE
+    displayName: PVC Storage Size
+    description: Size of PVC Storage
+metadata:
+  name: minio-template
+  namespace: "${NAMESPACE}"
+  labels:
+    app: minio
+    app.kubernetes.io/part-of: minio
+objects:
+  - kind: Secret
+    apiVersion: v1
+    type: Opaque
+    metadata:
+      name: minio-secrets
+      namespace: "${NAMESPACE}"
+      annotations: {}
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+        name: minio-secrets
+    stringData:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD}"
+      MINIO_IDENTITY_OPENID_CONFIG_URL: "${MINIO_IDENTITY_OPENID_CONFIG_URL}"
+      MINIO_IDENTITY_OPENID_CLIENT_ID: "${MINIO_IDENTITY_OPENID_CLIENT_ID}"
+      MINIO_IDENTITY_OPENID_CLIENT_SECRET: "${MINIO_IDENTITY_OPENID_CLIENT_SECRET}"
+      MINIO_IDENTITY_OPENID_SCOPES: "${MINIO_IDENTITY_OPENID_SCOPES}"
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: minio-rt
+      namespace: "${NAMESPACE}"
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+    spec:
+      host: "${MINIO_SERVER_SUBDOMAIN}.${BASE_URL}"
+      path: /
+      to:
+        kind: Service
+        name: minio-svc
+      port:
+        targetPort: 9000
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+      wildcardPolicy: None
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: minio-console-rt
+      namespace: "${NAMESPACE}"
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+    spec:
+      host: "${MINIO_CONSOLE_SUBDOMAIN}.${BASE_URL}"
+      path: /
+      to:
+        kind: Service
+        name: minio-console-svc
+      port:
+        targetPort: 9001
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+      wildcardPolicy: None
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: minio-svc
+      namespace: "${NAMESPACE}"
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+    spec:
+      selector:
+        app: minio
+      ports:
+        - name: http
+          port: 9000
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: minio-console-svc
+      namespace: "${NAMESPACE}"
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+    spec:
+      selector:
+        app: minio
+      ports:
+        - name: console
+          port: 9001
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: minio-data
+      namespace: "${NAMESPACE}"
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: netapp-file-standard
+      resources:
+        requests:
+          storage: "${PVC_STORAGE_SIZE}"
+  - kind: Deployment
+    apiVersion: apps/v1
+    metadata:
+      name: minio
+      namespace: "${NAMESPACE}"
+      labels:
+        app: minio
+        app.kubernetes.io/part-of: minio
+    spec:
+      selector:
+        matchLabels:
+          app: minio
+      strategy:
+        type: Recreate
+      template:
+        namespace: "${NAMESPACE}"
+        metadata:
+          labels:
+            app: minio
+            app.kubernetes.io/part-of: minio
+        spec:
+          containers:
+            - name: minio
+              image: minio/minio
+              args:
+                - server
+                - /data
+                - --console-address
+                - :9001
+              env:
+                - name: MINIO_ROOT_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-secrets
+                      key: MINIO_ROOT_USER
+                - name: MINIO_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-secrets
+                      key: MINIO_ROOT_PASSWORD
+                - name: MINIO_BROWSER_REDIRECT_URL
+                  value: "https://${MINIO_CONSOLE_SUBDOMAIN}.${BASE_URL}"
+                - name: MINIO_SERVER_URL
+                  value: "https://${MINIO_SERVER_SUBDOMAIN}.${BASE_URL}"
+                - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-secrets
+                      key: MINIO_IDENTITY_OPENID_CONFIG_URL
+                - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-secrets
+                      key: MINIO_IDENTITY_OPENID_CLIENT_ID
+                - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-secrets
+                      key: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+                - name: MINIO_IDENTITY_OPENID_SCOPES
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-secrets
+                      key: MINIO_IDENTITY_OPENID_SCOPES
+              livenessProbe:
+                httpGet:
+                  path: /minio/health/live
+                  port: http
+                  scheme: HTTP
+                initialDelaySeconds: 120
+                periodSeconds: 15
+                successThreshold: 1
+                timeoutSeconds: 10
+              ports:
+                - name: http
+                  containerPort: 9000
+                  protocol: TCP
+                - name: console
+                  containerPort: 9001
+                  protocol: TCP
+              volumeMounts:
+                - name: minio-data
+                  mountPath: /data
+          volumes:
+            - name: minio-data
+              persistentVolumeClaim:
+                claimName: minio-data
