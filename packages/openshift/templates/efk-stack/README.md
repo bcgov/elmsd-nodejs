@@ -16,7 +16,7 @@ OpenShift template to deploy an EFK (ElasticSearch, Fluent Bit, Kibana) Stack ac
 
     Create an `[OUPUT]` block for each source of logs you want to send to ElasticSearch. Logs are sent to Fluent Bit via a HTTP endpoint, http://\<fluent-bit-url>:\<fluent-bit-port>/\<tag-name>, for example.
 
-    _Note: If the value of \<tag-name> contains any special characters, they will be removed/replaced when referenced in the `Match` line. For example, if the \<tag-name> is `workbc-mobile-api`, the \<camel-case-tag> will be `workbc_mobile_api`._
+    _**Note**: If the value of \<tag-name> contains any special characters, they will be removed/replaced when referenced in the `Match` line. For example, if the \<tag-name> is `workbc-mobile-api`, the \<camel-case-tag> will be `workbc_mobile_api`._
 
     **Configure fluent-bit.cm.yaml**
 
@@ -89,3 +89,52 @@ OpenShift template to deploy an EFK (ElasticSearch, Fluent Bit, Kibana) Stack ac
                                 kubernetes.io/metadata.name: "${SOURCE_NAMESPACE}"
             policyTypes:
                 - Ingress
+
+## Usage
+
+Logs can be sent to Fluent Bit using the HTTP api.  Consider we have the following `fluent-bit.conf`:
+
+```conf
+[SERVICE]
+  Flush         5
+  Daemon        Off
+  Parsers_File  parsers.conf
+  Log_Level     debug
+  HTTP_Server   On
+  HTTP_Listen   0.0.0.0
+  HTTP_PORT     2020
+
+[INPUT]
+  Name  http
+  Host  0.0.0.0
+  Port  8888
+
+[OUTPUT]
+  Name                es
+  Match               workbc_mobile_api
+  Host                elasticsearch.<namespace>.svc.cluster.local
+  Port                9200
+  Index               workbc-mobile-api
+  Type                _doc
+  Suppress_Type_Name  On
+```
+
+Each `[OUTPUT]` block forwards logs for a specific `Index` -- in this case, `workbc-mobile-api`.  Let's try sending logs from our local machine.  Run the following command to make the HTTP api accessible:
+
+```sh
+oc -n <namespace> port-forward svc/fluent-bit 8888
+```
+
+Run the following `curl` command to create a new entry in the `workbc-mobile-api` index.
+
+```curl
+curl --location --request POST 'localhost:8888/workbc-mobile-api' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "message": "Hello, workbc-mobile-api!"
+}'
+```
+
+If you check Kibana, you'll see the log file is persisted and available for us to query.
+
+*Each index must be explicitly defined in the `fluent-bit.conf` file.  If you send a log to a non-existent index, fluent-bit will accept the request and do nothing with it, since it doesn't match any of the defined rules.*
