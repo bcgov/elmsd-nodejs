@@ -41,8 +41,10 @@ objects:
                         resources:
                             limits:
                                 cpu: "${KIBANA_CPU_LIMIT}"
+                                memory: "${KIBANA_MEMORY_LIMIT}"
                             requests:
                                 cpu: "${KIBANA_CPU_REQUEST}"
+                                memory: "${KIBANA_MEMORY_REQUEST}"
                         env:
                             - name: ELASTICSEARCH_URL
                               value: "${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"
@@ -69,3 +71,11 @@ parameters:
       description: Requested CPU per pod (in millicores ex. 500m)
       displayName: CPU Request
       value: 10m
+    - name: KIBANA_MEMORY_LIMIT
+      description: Limit Peak memory per pod
+      displayName: Memory Limit
+      value: 1Gi
+    - name: KIBANA_MEMORY_REQUEST
+      description: Requested memory per pod
+      displayName: Memory Request
+      value: 500Mi
