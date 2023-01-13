@@ -231,10 +231,10 @@ objects:
                   protocol: TCP
               resources:
                 requests:
-                  cpu: 5m
+                  cpu: 10m
                   memory: 150Mi
                 limits:
-                  cpu: 10m
+                  cpu: 100m
                   memory: 500Mi
               volumeMounts:
                 - name: minio-data
