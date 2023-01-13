@@ -10,8 +10,9 @@ These manifests deploy MinIO to OpenShift.  Choose one of the commands below bas
 ```sh
 oc process -f ./minio.yaml \
     -p NAMESPACE=<namespace> \
-    -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \
-    -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \
+    -p BASE_URL=apps.silver.devops.gov.bc.ca \ # Default Value
+    -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \ # https://<MINIO_CONSOLE_SUBDOMAIN>.<BASE_URL>
+    -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \ # https://<MINIO_SERVER_SUBDOMAIN>.<BASE_URL>
     -p MINIO_ROOT_USER=<username> \
     -p MINIO_ROOT_PASSWORD=<password> \
     -p PVC_STORAGE_SIZE=1Gi \
@@ -31,8 +32,9 @@ Run the following command to deploy the cluster.
 ```sh
 oc process -f ./minio-cluster.yaml \
     -p NAMESPACE=<namespace> \
-    -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \
-    -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \
+    -p BASE_URL=apps.silver.devops.gov.bc.ca \ # Default Value
+    -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \ # https://<MINIO_CONSOLE_SUBDOMAIN>.<BASE_URL>
+    -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \ # https://<MINIO_SERVER_SUBDOMAIN>.<BASE_URL>
     -p MINIO_ROOT_USER=<username> \
     -p MINIO_ROOT_PASSWORD=<password> \
     -p PVC_STORAGE_SIZE=1Gi \
