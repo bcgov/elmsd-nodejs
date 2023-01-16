@@ -2,14 +2,27 @@
 kind: Template
 apiVersion: template.openshift.io/v1
 parameters:
-  - name: NAMESPACE
-    displayName: Namespace
-    description: Namespace to apply the template
-    required: true
   - name: BASE_URL
     displayName: BC Gov OpenShift Base URL
     required: true
     value: apps.silver.devops.gov.bc.ca
+  - name: NAMESPACE
+    displayName: Namespace
+    description: Namespace to apply the template
+    required: true
+  - name: NAMESPACE_TOOLS
+    displayName: Tools Namespace
+    description: Namespace where the MinIO ImageStream is located
+    value: myspace-tools
+    required: true
+  - name: IMAGE_NAME
+    displayName: Image Name
+    value: minio
+    required: true
+  - name: IMAGE_TAG
+    displayName: Image Tag
+    value: RELEASE.2023-01-12T02-06-16Z
+    required: true
   - name: MINIO_CONSOLE_SUBDOMAIN
     displayName: MinIO Console Subdomain
     description: "ex: <subdomain>.${BASE_URL}"
@@ -157,6 +170,13 @@ objects:
       labels:
         app: minio
         app.kubernetes.io/part-of: minio
+    triggers:
+      - type: ImageChange
+        imageChangeParams:
+          from: 
+            kind: ImageStreamTag
+            namespace: ${NAMESPACE_TOOLS}
+            name: ${IMAGE_NAME}:${IMAGE_TAG}
     spec:
       selector:
         matchLabels:
@@ -172,7 +192,7 @@ objects:
         spec:
           containers:
             - name: minio
-              image: image-registry.openshift-image-registry.svc:5000/551bf1-tools/minio@sha256:ac89ad96f421c0d86fcfa2ce419c1f7c921a0956fef7514d8b66fbe01ab48740
+              image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE_TOOLS}/${IMAGE_NAME}:${IMAGE_TAG}
               args:
                 - server
                 - /data

@@ -1,5 +1,13 @@
 # MinIO OpenShift Template
 
+## <a name="prerequisites"></a>Prerequisites
+
+These instructions assume you have imported the MinIO image from Docker using the following command:
+
+```sh
+oc import-image docker.io/minio/minio:RELEASE.2023-01-12T02-06-16Z --from=docker.io/minio/minio:RELEASE.2023-01-12T02-06-16Z
+```
+
 ## <a name="installation"></a>Installation
 
 **Note:** If you want to use Single Sign On (SSO) to administer the MinIO Installation, see the [Single Sign On (SSO)](#sso) section for additional configuration parameters *before* deploying your selected manifest.  If you want to add SSO later, use the MinIO GUI.
@@ -10,6 +18,7 @@ These manifests deploy MinIO to OpenShift.  Choose one of the commands below bas
 ```sh
 oc process -f ./minio.yaml \
     -p NAMESPACE=<namespace> \
+    -p NAMESPACE_TOOLS=<tools-namespace> \
     -p BASE_URL=apps.silver.devops.gov.bc.ca \ # Default Value
     -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \ # https://<MINIO_CONSOLE_SUBDOMAIN>.<BASE_URL>
     -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \ # https://<MINIO_SERVER_SUBDOMAIN>.<BASE_URL>
@@ -32,6 +41,7 @@ Run the following command to deploy the cluster.
 ```sh
 oc process -f ./minio-cluster.yaml \
     -p NAMESPACE=<namespace> \
+    -p NAMESPACE_TOOLS=<tools-namespace> \
     -p BASE_URL=apps.silver.devops.gov.bc.ca \ # Default Value
     -p MINIO_CONSOLE_SUBDOMAIN=minio-console-<namespace> \ # https://<MINIO_CONSOLE_SUBDOMAIN>.<BASE_URL>
     -p MINIO_SERVER_SUBDOMAIN=minio-<namespace> \ # https://<MINIO_SERVER_SUBDOMAIN>.<BASE_URL>
