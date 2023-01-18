@@ -187,7 +187,7 @@ objects:
         spec:
           containers:
             - name: minio
-              image: image-registry.openshift-image-registry.svc:5000/${NAMESPACE_TOOLS}/${IMAGE_NAME}:${IMAGE_TAG}
+              image: ${NAMESPACE_TOOLS}/${IMAGE_NAME}:${IMAGE_TAG}
               args:
                 - server
                 - http://minio-{0...${MINIO_REPLICA}}.minio-svc.${NAMESPACE}.svc.cluster.local/data
