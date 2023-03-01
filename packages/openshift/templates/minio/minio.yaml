@@ -13,7 +13,6 @@ parameters:
   - name: NAMESPACE_TOOLS
     displayName: Tools Namespace
     description: Namespace where the MinIO ImageStream is located
-    value: myspace-tools
     required: true
   - name: IMAGE_NAME
     displayName: Image Name
