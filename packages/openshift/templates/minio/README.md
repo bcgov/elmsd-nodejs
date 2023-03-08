@@ -51,6 +51,12 @@ oc process -f ./minio-cluster.yaml \
     | oc apply -f -
 ```
 
+Alternatively, this command can also be ran provided a .env file has been generated with the params in params.sample
+
+```sh
+oc process -f minio-cluster.yaml --param-file=.env | oc apply -f -
+```
+
 ## <a name="usage"></a>Usage
 
 **Note:** Install the [MinIO Client](https://min.io/docs/minio/linux/reference/minio-mc.html) (mc) before continuing in this section.
